@@ -27,8 +27,8 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="w-full shadow-sm sticky top-0 z-50 bg-base-200 h-[10vh]">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between relative">
+    <nav className="w-full shadow-sm sticky top-0 z-50 bg-base-200 h-[10vh] flex">
+      <div className="max-w-7xl w-full mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
           <FaBook className="text-primary" /> MyNovelList
@@ -98,7 +98,7 @@ const Navbar = () => {
               <Link to="/signup">
                 {/* <button className="bg-primary text-base-100 hover:bg-base-100 hover:text-primary transition-all px-3 py-1 text-sm rounded"> */}
                 <div className="relative group overflow-hidden w-[6vw] h-[4.9vh] bg-primary rounded hover:rounded-none transition-all hover:border-base-100">
-                  <div className="absolute top-0 left-full w-full h-full bg-base-100 transition-all duration-300  group-hover:left-0 z-0"></div>
+                  <div className="absolute top-0 left-full w-full h-full bg-base-200 transition-all duration-300  group-hover:left-0 z-0"></div>
                   <button className="absolute inset-0 z-10 flex items-center justify-center text-sm text-base-100 group-hover:text-primary transition-colors duration-300">
                     Sign Up
                   </button>
