@@ -1,15 +1,34 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaUser , FaLock } from "react-icons/fa";
 import axios from "../config/api";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Login = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  //   useEffect(() => {
+  //     if (location.state?.fromProfile) {
+  //       const id = location.state?.toastId;
+  //       toast.dismiss(id);
+  //     }
+  //   }, [location]);
+  useEffect(() => {
+    if (location.state?.toastId) {
+      setTimeout(() => {
+        toast.dismiss(location.state.toastId);
+      }, 500);
+      sessionStorage.removeItem("redirected");
+    }
+  }, [location]);
+
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,12 +38,19 @@ const Login = () => {
     e.preventDefault();
     // TODO: login logic here
     try {
-      const res = await axios.post("/api/auth/login", {
-        email: form.email,
-        password: form.password,
+      const loginPromise = login(form);
+      toast.promise(loginPromise, {
+        loading: setTimeout(() => {
+          "Logging in...";
+        }, 1000),
+        success: (message) => message || "Login Successfully",
+        error: (err) => err.response?.data?.message || "Error",
       });
-      console.log(res.data.message);
-      navigate("/");
+      const message = await loginPromise;
+      const id = toast.loading("Redirecting to profile section...");
+      navigate("/profile", {
+        state: { fromLogin: true, toastId: id },
+      });
     } catch (error) {
       console.log(
         error?.response?.data?.message || error.response || error.message
@@ -42,17 +68,17 @@ const Login = () => {
         </h1>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Email */}
+          {/* Username */}
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1">Username</label>
             <div className="relative">
-              <FaEnvelope className="absolute top-2.5 left-3 text-muted-foreground" />
+              <FaUser  className="absolute top-2.5 left-3 text-muted-foreground" />
               <input
-                type="email"
-                name="email"
-                value={form.email}
+                type="text"
+                name="username"
+                value={form.username}
                 onChange={handleChange}
-                placeholder="you@example.com"
+                placeholder="Username"
                 className="pl-10 w-full px-3 py-2 border border-border rounded-md bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />

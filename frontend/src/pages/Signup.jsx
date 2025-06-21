@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaCamera } from "react-icons/fa";
 import axios from "../config/api";
 
 const Signup = () => {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    username: "",
     password: "",
     confirmPassword: "",
   });
+
+  const [avatar, setAvatar] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   const navigate = useNavigate();
 
@@ -17,23 +21,43 @@ const Signup = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatar(file);
+      //   const reader = new FileReader();
+      //   reader.onloadend = () => {
+      //     setAvatarPreview(reader.result);
+      //   };
+      //   reader.readAsDataURL(file);
+      const avatarURL = URL.createObjectURL(file);
+      setAvatarPreview(avatarURL);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Submit logic
-    // console.log("Form Submitted", form);
     try {
-      const res = await axios.post("/api/auth/signup", {
-        name: form.name,
-        email: form.email,
-        password: form.password,
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("username", form.username);
+      formData.append("email", form.email);
+      formData.append("password", form.password);
+      if (avatar) formData.append("avatar", avatar);
+
+    //   console.log(form);
+    //   console.log(formData);
+
+      const res = await axios.post("/api/auth/signup", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
+
       console.log(res.data.message);
       navigate("/login");
     } catch (error) {
       console.log(
         error?.response?.data?.message || error.response || error.message
       );
-      //   console.log(error);
     }
   };
 
@@ -43,6 +67,26 @@ const Signup = () => {
         <h1 className="text-2xl font-bold text-center text-primary">
           Create an Account
         </h1>
+
+        {/* Avatar Upload */}
+        <div className="flex justify-center relative">
+          <div className="relative w-32 h-32">
+            <img
+              src={avatarPreview || `https://placehold.co/600x400?text=Avatar`}
+              alt="avatar"
+              className="w-full h-full object-cover border-2 border-primary shadow rounded-full overflow-hidden"
+            />
+            <label className="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full cursor-pointer hover:bg-primary/90">
+              <FaCamera size={14} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+            </label>
+          </div>
+        </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Name */}
@@ -73,6 +117,23 @@ const Signup = () => {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
+                className="pl-10 w-full px-3 py-2 border border-border rounded-md bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Username */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Username</label>
+            <div className="relative">
+              <FaUser className="absolute top-2.5 left-3 text-muted-foreground" />
+              <input
+                type="text"
+                name="username"
+                value={form.username}
+                onChange={handleChange}
+                placeholder="Unique username"
                 className="pl-10 w-full px-3 py-2 border border-border rounded-md bg-input text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />

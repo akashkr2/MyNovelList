@@ -1,9 +1,10 @@
 import express, { json } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import connectDB from "./src/config/db.js";
 import authRouter from "./src/routers/authRouter.js";
-import cookieParser from "cookie-parser";
+import userRouter from "./src/routers/userRouter.js";
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+
+app.use("/api/user", userRouter);
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({

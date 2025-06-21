@@ -8,6 +8,13 @@ const userSchema = new mongoose.Schema(
       required: [true, "Name is required"],
       trim: true,
     },
+    username: {
+      type: String,
+      required: [true, "Username is required"],
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -23,6 +30,9 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String, // profile image URL
+    },
+    avatarPublicId: {
+      type: String, // profile image public id
     },
     role: {
       type: String,

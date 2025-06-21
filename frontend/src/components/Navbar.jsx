@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FaBook, FaUserCircle, FaChevronDown } from "react-icons/fa";
 import { motion } from "framer-motion";
+import UserMenu from "./UserMenu";
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { isLogin, user, logout } = useContext(AuthContext);
   const [themeOpen, setThemeOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const toggleThemeDropdown = () => setThemeOpen((prev) => !prev);
   const toggleUserDropdown = () => setUserMenuOpen((prev) => !prev);
-  
 
   const creativeMiddle = (
     <motion.div
@@ -27,7 +27,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="w-full shadow-sm sticky top-0 z-50 bg-base-200 h-[10vh] flex">
+    <nav className="min-w-sm w-full shadow-sm sticky top-0 z-50 bg-base-200 h-[10vh] mb-1 flex">
       <div className="max-w-7xl w-full mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
@@ -40,15 +40,16 @@ const Navbar = () => {
         {/* Right Side */}
         <div className="flex items-center gap-4 relative">
           {/* Theme Switcher */}
-          <div className="relative">
+          <div className="relative group">
             <button
-              onClick={toggleThemeDropdown}
+              //   onClick={toggleThemeDropdown}
               className="border rounded px-3 py-1 text-sm hover:bg-muted flex items-center gap-3"
             >
               Theme <FaChevronDown />
             </button>
-            {themeOpen && (
-              <div className="absolute right-0 mt-2 bg-primary text-popover-foreground rounded shadow w-40 z-50">
+            {
+              // themeOpen &&
+              <div className="absolute right-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 bg-primary text-popover-foreground rounded shadow w-40 z-50">
                 <ul className="p-2 space-y-1 text-sm">
                   {["System", "Dark", "Light"].map((theme, index) => (
                     <li
@@ -60,34 +61,30 @@ const Navbar = () => {
                   ))}
                 </ul>
               </div>
-            )}
+            }
           </div>
 
           {/* Auth Logic */}
-          {user ? (
-            <div className="relative">
-              <button
-                onClick={toggleUserDropdown}
-                className="flex items-center gap-2 px-3 py-1 text-sm hover:bg-muted rounded"
-              >
-                <FaUserCircle /> {user.name || "Profile"}
-              </button>
-              {userMenuOpen && (
-                <div className="absolute right-0 mt-2 bg-popover text-popover-foreground border rounded shadow w-40 z-50">
-                  <ul className="p-2 space-y-1 text-sm">
-                    <li className="hover:bg-muted px-2 py-1 cursor-pointer">
-                      <Link to="/profile">Profile</Link>
-                    </li>
-                    <li
-                      onClick={logout}
-                      className="hover:bg-muted px-2 py-1 cursor-pointer"
-                    >
-                      Logout
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+          {isLogin ? (
+            // <div className="relative group">
+            //   <button className="flex flex-col items-center gap-2 px-3 py-1 text-sm hover:bg-muted rounded">
+            //     <img
+            //       src={user.avatar}
+            //       alt="avatar"
+            //       className="h-8 w-8 rounded-full"
+            //     />
+            //   </button>
+
+            //   <div className="absolute right-0 mt-2 border rounded shadow w-40 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 bg-base-100">
+            //     <ul className="p-2 space-y-1 text-sm [&>*]:rounded [&>*]:cursor-pointer [&>*]:px-2 [&>*]:py-1 [&>*]:hover:bg-base-200">
+            //       <li>
+            //         <Link to="/profile">Profile</Link>
+            //       </li>
+            //       <li onClick={logout}>Logout</li>
+            //     </ul>
+            //   </div>
+            // </div>
+            <UserMenu user={user} logout={logout} />
           ) : (
             <>
               <Link to="/login">
