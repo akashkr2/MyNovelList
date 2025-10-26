@@ -31,7 +31,8 @@ const Navbar = () => {
       <div className="max-w-7xl w-full mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-          <FaBook className="text-primary" /> MyNovelList
+          {/* <FaBook className="text-primary" /> MyNovelList */}
+          <img src="/logo.png" alt="" className="w-"/>
         </Link>
 
         {/* Creative Middle */}
